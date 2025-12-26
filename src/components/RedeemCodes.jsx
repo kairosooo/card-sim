@@ -33,6 +33,8 @@ export default function RedeemCodes({ goldCoins, setGoldCoins, claimedCodes, set
             amount = 500;
         } else if (code.startsWith('GOLD-')) {
             amount = 1000;
+        } else if (code.startsWith('ULTIMATE-')) {
+            amount = 10000;
         } else {
             setStatus({ type: 'error', message: 'Invalid code format!' });
             return;
@@ -89,6 +91,7 @@ export default function RedeemCodes({ goldCoins, setGoldCoins, claimedCodes, set
                     <div className="tier-item brnz"><strong>BRNZ-</strong> 50 Coins</div>
                     <div className="tier-item slvr"><strong>SLVR-</strong> 500 Coins</div>
                     <div className="tier-item gold"><strong>GOLD-</strong> 1000 Coins</div>
+                    <div className="tier-item ultimate"><strong>ULTIMATE-</strong> 10000 Coins</div>
                 </div>
             </div>
         </div>

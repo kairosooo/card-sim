@@ -122,7 +122,7 @@
 
 .tier-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
 }
 
@@ -150,6 +150,20 @@
 
 .tier-item.gold strong {
     color: #ffd700;
+}
+
+.tier-item.ultimate {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, rgba(138, 43, 226, 0.1) 0%, rgba(75, 0, 130, 0.1) 100%);
+    border: 1px solid rgba(138, 43, 226, 0.3);
+}
+
+.tier-item.ultimate strong {
+    background: linear-gradient(135deg, #ff00ff 0%, #8a2be2 50%, #4b0082 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 1rem;
 }
 
 @keyframes slideUp {

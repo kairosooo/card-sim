@@ -427,18 +427,35 @@ const PackOpener = ({ set, onComplete, onAddCards, packSize = 10, onReplay, onCa
                     >
                         <div className={`booster-pack-model ${animationStage}`}>
                             <div
-                                className={`pack-top-strip ${animationStage === 'ripping' ? 'flying-off' : ''}`}
+                                className={`pack-top-strip ${animationStage === 'ripping' ? 'flying-off' : ''} ${set.image ? 'has-image' : ''}`}
                                 style={{ '--set-color': set.color }}
                                 ref={stripRef}
                             >
-                                <div className="crimp-texture"></div>
+                                {set.image ? (
+                                    <div className="pack-art-container top-strip-art">
+                                        <img src={set.image} alt="" className="pack-art-image" />
+                                    </div>
+                                ) : (
+                                    <div className="crimp-texture"></div>
+                                )}
                             </div>
                             <div className="pack-body" style={{ '--set-color': set.color }}>
-                                <div className="set-symbol">{set.symbol}</div>
-                                <h3>{set.name}</h3>
-                                {animationStage === 'tear-interaction' && (
-                                    <div className="swipe-hint">SWIPE TO RIP ➔</div>
+                                {set.image ? (
+                                    <div className="pack-art-container">
+                                        <img src={set.image} alt={set.name} className="pack-art-image" />
+                                    </div>
+                                ) : (
+                                    <div className="set-symbol">{set.symbol}</div>
                                 )}
+                                <div className="pack-details-overlay">
+                                    <div className="pack-info-row">
+                                        <span className="pack-mini-symbol">{set.symbol}</span>
+                                        <h3>{set.name}</h3>
+                                    </div>
+                                    {animationStage === 'tear-interaction' && (
+                                        <div className="swipe-hint">SWIPE TO RIP ➔</div>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>

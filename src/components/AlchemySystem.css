@@ -30,6 +30,32 @@
 .icon-burn {
     color: #9b59b6;
     animation: pulse-glow 2s infinite;
+    position: relative;
+    z-index: 2;
+}
+
+.orb-icon-wrapper {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.orb-inner-glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(155, 89, 182, 0.4) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: pulse-glow 1.5s infinite alternate;
+}
+
+.orb-subtitle {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 4px;
 }
 
 .recipe-selector {
@@ -255,29 +281,25 @@
     font-weight: 800;
 }
 
-/* Circular positioning for slots */
+/* Circular positioning for 5 slots */
 .slot:nth-child(1) {
     transform: translate(-50%, -50%) rotate(0deg) translateY(-180px);
 }
 
 .slot:nth-child(2) {
-    transform: translate(-50%, -50%) rotate(60deg) translateY(-180px) rotate(-60deg);
+    transform: translate(-50%, -50%) rotate(72deg) translateY(-180px) rotate(-72deg);
 }
 
 .slot:nth-child(3) {
-    transform: translate(-50%, -50%) rotate(120deg) translateY(-180px) rotate(-120deg);
+    transform: translate(-50%, -50%) rotate(144deg) translateY(-180px) rotate(-144deg);
 }
 
 .slot:nth-child(4) {
-    transform: translate(-50%, -50%) rotate(180deg) translateY(-180px) rotate(-180deg);
+    transform: translate(-50%, -50%) rotate(216deg) translateY(-180px) rotate(-216deg);
 }
 
 .slot:nth-child(5) {
-    transform: translate(-50%, -50%) rotate(240deg) translateY(-180px) rotate(-240deg);
-}
-
-.slot:nth-child(6) {
-    transform: translate(-50%, -50%) rotate(300deg) translateY(-180px) rotate(-300deg);
+    transform: translate(-50%, -50%) rotate(288deg) translateY(-180px) rotate(-288deg);
 }
 
 .transmute-orb {
@@ -325,6 +347,77 @@
     border-radius: 50%;
     box-shadow: 0 0 100px #9b59b6, 0 0 200px #9b59b6;
     animation: flash 0.5s infinite alternate;
+}
+
+.success-rate-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.rate-value {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.rate-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.failure-orb {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(231, 76, 60, 0.2);
+    border: 3px solid #e74c3c;
+    color: #e74c3c;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+    cursor: pointer;
+}
+
+.failure-orb span {
+    font-weight: 900;
+    font-size: 1.2rem;
+}
+
+.failure-orb p {
+    font-size: 0.7rem;
+    opacity: 0.8;
+}
+
+@keyframes shake {
+
+    10%,
+    90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%,
+    80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%,
+    60% {
+        transform: translate3d(4px, 0, 0);
+    }
 }
 
 .recipe-info {
@@ -471,8 +564,414 @@
     }
 }
 
+/* Full-screen Transmutation Animation */
+.fullscreen-transmutation-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: radial-gradient(circle at center, rgba(20, 20, 40, 0.95) 0%, rgba(0, 0, 0, 0.98) 100%);
+    backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.transmutation-background {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Floating particles */
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, #9b59b6, transparent);
+    border-radius: 50%;
+    left: var(--x);
+    top: var(--y);
+    animation: floatParticle var(--duration) ease-in-out infinite;
+    animation-delay: var(--delay);
+    opacity: 0.6;
+    box-shadow: 0 0 10px #9b59b6;
+}
+
+@keyframes floatParticle {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0;
+    }
+
+    50% {
+        transform: translate(calc(var(--x) * 0.1), calc(var(--y) * -0.2)) scale(1.5);
+        opacity: 0.8;
+    }
+}
+
+/* Central orb container */
+.central-orb-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Pulsing central orb during transmutation */
+.central-orb {
+    position: relative;
+    width: 400px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.central-orb.pulsing {
+    animation: orbPulse 2s ease-in-out infinite;
+}
+
+@keyframes orbPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.orb-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid rgba(155, 89, 182, 0.4);
+    animation: expandRing 2s ease-out infinite;
+}
+
+.orb-ring.ring-1 {
+    width: 200px;
+    height: 200px;
+    animation-delay: 0s;
+}
+
+.orb-ring.ring-2 {
+    width: 300px;
+    height: 300px;
+    animation-delay: 0.3s;
+}
+
+.orb-ring.ring-3 {
+    width: 400px;
+    height: 400px;
+    animation-delay: 0.6s;
+}
+
+@keyframes expandRing {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+.orb-core {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(155, 89, 182, 0.8), rgba(155, 89, 182, 0.2));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    box-shadow:
+        0 0 60px rgba(155, 89, 182, 0.8),
+        0 0 120px rgba(155, 89, 182, 0.6),
+        inset 0 0 60px rgba(155, 89, 182, 0.4);
+    animation: coreGlow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes coreGlow {
+    from {
+        box-shadow:
+            0 0 60px rgba(155, 89, 182, 0.8),
+            0 0 120px rgba(155, 89, 182, 0.6),
+            inset 0 0 60px rgba(155, 89, 182, 0.4);
+    }
+
+    to {
+        box-shadow:
+            0 0 100px rgba(155, 89, 182, 1),
+            0 0 200px rgba(155, 89, 182, 0.8),
+            inset 0 0 80px rgba(155, 89, 182, 0.6);
+    }
+}
+
+.orb-text {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    text-shadow: 0 0 20px rgba(155, 89, 182, 0.8);
+    animation: textPulse 1s ease-in-out infinite;
+}
+
+@keyframes textPulse {
+
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Result display */
+.result-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    animation: resultFadeIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes resultFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.result-icon {
+    filter: drop-shadow(0 0 30px currentColor);
+    animation: iconBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes iconBounce {
+    0% {
+        transform: scale(0) rotate(-180deg);
+    }
+
+    60% {
+        transform: scale(1.2) rotate(10deg);
+    }
+
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+.result-title {
+    font-size: 5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 12px;
+    margin: 0;
+    text-shadow: 0 0 40px currentColor;
+    animation: titleGlow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlow {
+    from {
+        text-shadow: 0 0 40px currentColor;
+    }
+
+    to {
+        text-shadow: 0 0 80px currentColor, 0 0 120px currentColor;
+    }
+}
+
+.result-subtitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    opacity: 0.9;
+    margin: 0;
+}
+
+/* Success specific styles */
+.success-result {
+    color: #2ecc71;
+}
+
+.result-burst {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(46, 204, 113, 0.3) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: burstExpand 1s ease-out;
+}
+
+@keyframes burstExpand {
+    from {
+        transform: scale(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+.result-card-showcase {
+    position: relative;
+    animation: cardReveal 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.3s backwards;
+    filter: drop-shadow(0 0 40px rgba(46, 204, 113, 0.6));
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.result-card-image {
+    width: auto;
+    height: 500px;
+    max-width: 90vw;
+    display: block;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes cardReveal {
+    from {
+        transform: rotateY(180deg) scale(0.5);
+        opacity: 0;
+    }
+
+    to {
+        transform: rotateY(0deg) scale(1);
+        opacity: 1;
+    }
+}
+
+.result-rarity {
+    font-size: 3rem;
+    color: #f1c40f;
+    text-shadow: 0 0 30px #f1c40f;
+    animation: starShine 1.5s ease-in-out infinite;
+}
+
+@keyframes starShine {
+
+    0%,
+    100% {
+        opacity: 0.8;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+}
+
+/* Failure specific styles */
+.failure-result {
+    color: #e74c3c;
+}
+
+.failure-shockwave {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border: 4px solid rgba(231, 76, 60, 0.6);
+    border-radius: 50%;
+    animation: shockwaveExpand 0.8s ease-out;
+}
+
+@keyframes shockwaveExpand {
+    from {
+        transform: scale(0);
+        opacity: 1;
+        border-width: 8px;
+    }
+
+    to {
+        transform: scale(2);
+        opacity: 0;
+        border-width: 0px;
+    }
+}
+
+.failure-particles {
+    position: relative;
+    width: 300px;
+    height: 300px;
+}
+
+.failure-particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #e74c3c;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform-origin: center;
+    animation: particleExplode 1s ease-out forwards;
+    animation-delay: var(--delay);
+    box-shadow: 0 0 10px #e74c3c;
+}
+
+@keyframes particleExplode {
+    from {
+        transform: translate(-50%, -50%) rotate(var(--angle)) translateY(0) scale(1);
+        opacity: 1;
+    }
+
+    to {
+        transform: translate(-50%, -50%) rotate(var(--angle)) translateY(150px) scale(0);
+        opacity: 0;
+    }
+}
+
 @media (max-width: 1000px) {
     .alchemy-main {
         grid-template-columns: 1fr;
+    }
+
+    .central-orb {
+        width: 300px;
+        height: 300px;
+    }
+
+    .orb-core {
+        width: 140px;
+        height: 140px;
+    }
+
+    .result-title {
+        font-size: 2.5rem;
+        letter-spacing: 4px;
+    }
+
+    .result-card-showcase {
+        width: 220px;
+        height: 308px;
     }
 }

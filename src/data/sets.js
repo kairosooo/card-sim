@@ -1,4 +1,10 @@
-export const SETS = [];
+export const SETS = [{
+    "id": "set-custom",
+    "name": "Custom Creations",
+    "symbol": "✨",
+    "color": "#e67e22",
+    "cards": []
+}];
 
 export const RARITIES = {
     1: { label: 'Common', color: '#95a5a6' },
@@ -8,4 +14,4 @@ export const RARITIES = {
     5: { label: 'Secret Rare', color: '#f1c40f' },
 };
 
-export const CARD_BACK = '/src/assets/card_back.png';
+export const CARD_BACK = '/card_back.png';

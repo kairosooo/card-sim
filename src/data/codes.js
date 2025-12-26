@@ -41,5 +41,8 @@ export const VALID_CODES = {
     "GOLD-G2YD04Y3": true,
     "GOLD-UPJNWW8E": true,
     "GOLD-X5OLZ7FH": true,
-    "GOLD-SK7EMHPG": true
+    "GOLD-SK7EMHPG": true,
+
+    // Ultimate Cheat Code (10000 Coins)
+    "ULTIMATE-CHEAT": true
 };

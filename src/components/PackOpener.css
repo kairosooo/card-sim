@@ -142,19 +142,17 @@
     bottom: 0;
     width: 100%;
     height: 85%;
-    /* New Pack Art (calculated to align with top strip) */
-    background: url('/images/new-pack-art.jpg') no-repeat;
-    background-size: 280px 440px;
-    background-position: 0 -66px;
-
     border-radius: 0 0 12px 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
+    /* Align details to bottom */
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
     border: 1px solid rgba(255, 255, 255, 0.2);
     z-index: 2;
+    background: #111;
+    overflow: hidden;
 }
 
 .pack-top-strip {
@@ -162,15 +160,77 @@
     top: 0;
     width: 100%;
     height: 15%;
-    /* New Pack Art (Top Section) */
-    background: url('/images/new-pack-art.jpg') no-repeat;
-    background-size: 280px 440px;
-    background-position: 0 0;
-
     border-radius: 12px 12px 0 0;
     border-bottom: 2px dashed rgba(255, 255, 255, 0.3);
     z-index: 3;
     transform-origin: bottom left;
+    background: #222;
+    overflow: hidden;
+}
+
+.pack-art-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.pack-art-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.top-strip-art .pack-art-image {
+    object-position: center top;
+}
+
+.pack-body .pack-art-image {
+    /* Offset by the height of the top strip (15%) */
+    height: 117.6%;
+    /* 100 / 0.85 approx */
+    object-position: center bottom;
+    transform: translateY(0);
+}
+
+.pack-details-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 40px 20px 30px;
+    background: linear-gradient(to top,
+            rgba(0, 0, 0, 1) 0%,
+            rgba(0, 0, 0, 0.8) 50%,
+            transparent 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    z-index: 5;
+    text-align: center;
+}
+
+.pack-info-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.pack-mini-symbol {
+    font-size: 1.6rem;
+    color: var(--set-color);
+    filter: drop-shadow(0 0 8px var(--set-color));
+}
+
+.pack-details-overlay h3 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: white;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .pack-top-strip.flying-off {

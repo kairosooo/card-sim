@@ -1,16 +1,32 @@
-# React + Vite
+# CardSim - Trading Card Simulator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web-based trading card collector simulator with custom card creation, pack opening, and collection management.
 
-Currently, two official plugins are available:
+## 🚀 Features
+- **Pack Opening**: Animations, sounds, and probability-based card drops.
+- **Card Builder**: Create custom cards with images, names, and rarities.
+- **Expansion Management**: Create custom sets and organize your cards.
+- **Collection Binder**: Track your progress and view your collected cards.
+- **Alchemy System**: Upgrade lower tier cards.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🛠 Deployment & "Burn-in" Guide
 
-## React Compiler
+To deploy this app to Vercel with your custom cards pre-loaded (burned in):
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 1. Burn-in Custom Cards
+The app saves your data to the browser's `localStorage` by default. To make this data permanent for all users on the web:
+1.  Open the **Admin Panel** (Password: `1234qwer`).
+2.  Click the **Download Source** button (Green button with download icon).
+3.  A file named `sets.js` will download.
+4.  Replace the file in your project folder at:
+    `src/data/sets.js`
+    with this new downloaded file.
 
-## Expanding the ESLint configuration
+### 2. Deploy to Vercel
+1.  Push your code (with the new `sets.js`) to GitHub.
+2.  Import the project in Vercel.
+3.  Deploy! The app will now start with your custom cards by default.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 💻 Development
+- Run dev server: `npm run dev`
+- Build for production: `npm run build`

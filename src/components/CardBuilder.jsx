@@ -1,7 +1,5 @@
-
-import React, { useState, useCallback, useMemo } from 'react';
-import Cropper from 'react-easy-crop';
-import { Upload, X, Check, Sparkles, Database, LayoutGrid, Edit2, Save, Trash2, ImagePlus } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { X, Database, LayoutGrid, Edit2, Save, Trash2, ImagePlus, Upload, Download } from 'lucide-react';
 import Card from './Card';
 import { fileToBase64 } from '../utils/fileUtils';
 import './CardBuilder.css';
@@ -9,86 +7,15 @@ import './CardBuilder.css';
 const ASPECT_RATIO = 2.5 / 3.5;
 
 export default function CardBuilder({ onCreateCard, masterSets, onUpdateMasterSets, onCardClick }) {
-    const [viewMode, setViewMode] = useState('builder'); // 'builder', 'inventory', or 'premade'
-    const [image, setImage] = useState(null);
-    const [crop, setCrop] = useState({ x: 0, y: 0 });
-    const [zoom, setZoom] = useState(1);
-    const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
-    const [showCropper, setShowCropper] = useState(false);
+    const [viewMode, setViewMode] = useState('premade'); // 'premade' or 'inventory'
+    const [rarity, setRarity] = useState(1); // Used for batch upload default
 
-    // Creator State
-    const [cardName, setCardName] = useState('New Card');
-    const [rarity, setRarity] = useState(1);
-    const [holoPattern, setHoloPattern] = useState('none');
-    const [description, setDescription] = useState('A unique custom creation.');
-    const [previewImage, setPreviewImage] = useState(null);
+    // Inventory State
 
     // Inventory State
     const [searchQuery, setSearchQuery] = useState('');
     const [editingCard, setEditingCard] = useState(null); // For global edit
     const [deletingCard, setDeletingCard] = useState(null); // For deletion confirmation
-
-    const onCropComplete = useCallback((_croppedArea, croppedAreaPixels) => {
-        setCroppedAreaPixels(croppedAreaPixels);
-    }, []);
-
-    const processFiles = async (files) => {
-        if (!files || files.length === 0) return;
-
-        if (files.length === 1) {
-            // Single File - Cropper Mode
-            const reader = new FileReader();
-            reader.addEventListener('load', () => {
-                setImage(reader.result);
-                setShowCropper(true);
-            });
-            reader.readAsDataURL(files[0]);
-        } else {
-            // Batch Mode (from builder tab)
-            if (!window.confirm(`Batch create ${files.length} cards?`)) return;
-
-            let successCount = 0;
-            const newCards = [];
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                try {
-                    const base64 = await fileToBase64(file);
-                    const newCard = {
-                        id: `custom-${Date.now()}-${i}`,
-                        name: file.name.replace(/\.[^/.]+$/, "") || 'New Card',
-                        rarity: 1, // Default rarity for builder batch
-                        holoPattern: 'none',
-                        description: 'Batch created.',
-                        image: base64,
-                        isCustom: true
-                    };
-                    newCards.push(newCard);
-                    successCount++;
-                } catch (err) {
-                    console.error('Batch upload error:', err);
-                }
-            }
-            if (newCards.length > 0) {
-                onCreateCard(newCards);
-            }
-            alert(`Successfully created ${successCount} cards!`);
-            setViewMode('inventory');
-        }
-    };
-
-    const handleFileInput = (e) => {
-        if (e.target.files && e.target.files.length > 0) {
-            processFiles(e.target.files);
-        }
-    };
-
-    const handleDrop = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-            processFiles(e.dataTransfer.files);
-        }
-    };
 
     const handlePremadeUpload = async (files) => {
         if (!files || files.length === 0) return;
@@ -123,6 +50,71 @@ export default function CardBuilder({ onCreateCard, masterSets, onUpdateMasterSe
             onCreateCard(newCards);
         }
         setViewMode('inventory');
+    };
+
+    const handleExportSource = async () => {
+        const dataStr = `export const SETS = ${JSON.stringify(masterSets, null, 2)};`;
+
+        try {
+            // Attempt to use the File System Access API (Chrome/Edge/Opera)
+            if (window.showSaveFilePicker) {
+                const handle = await window.showSaveFilePicker({
+                    suggestedName: 'sets.js',
+                    types: [{
+                        description: 'JavaScript Source File',
+                        accept: { 'text/javascript': ['.js'] },
+                    }],
+                });
+                const writable = await handle.createWritable();
+                await writable.write(dataStr);
+                await writable.close();
+                return;
+            }
+            throw new Error('API not supported');
+        } catch (err) {
+            // Fallback for Firefox/Safari or if user cancels
+            if (err.name === 'AbortError') return;
+
+            const blob = new Blob([dataStr], { type: "text/javascript;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = "sets.js";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    };
+
+    const handleImportSource = (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const text = event.target.result;
+                let jsonPart = text.replace(/^export\s+const\s+SETS\s+=\s+/, '');
+                jsonPart = jsonPart.replace(/;\s*$/, '');
+
+                const importedSets = JSON.parse(jsonPart);
+
+                if (Array.isArray(importedSets)) {
+                    // Check if window.confirm is wanted or custom modal. Using window.confirm for simplicity as per plan.
+                    if (window.confirm(`Import ${importedSets.length} sets? This will overwrite your current configuration.`)) {
+                        onUpdateMasterSets(importedSets);
+                        alert('Import successful!');
+                    }
+                } else {
+                    alert('Invalid file format: Expected an array of sets.');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Failed to parse file. Please ensure it is a valid sets.js file exported from CardSim.');
+            }
+        };
+        reader.readAsText(file);
+        e.target.value = '';
     };
 
     const autoCropImage = async (file) => {
@@ -163,40 +155,7 @@ export default function CardBuilder({ onCreateCard, masterSets, onUpdateMasterSe
         });
     };
 
-    const createCroppedImage = async () => {
-        try {
-            const croppedBlob = await getCroppedBlob(image, croppedAreaPixels);
-            const base64 = await fileToBase64(croppedBlob);
-            setPreviewImage(base64);
-            setShowCropper(false);
-        } catch (e) {
-            console.error('Processing Error:', e);
-            alert('Image processing failed.');
-        }
-    };
 
-    const handleSave = () => {
-        if (!previewImage) return;
-
-        const newCard = {
-            id: `custom-${Date.now()}`,
-            name: cardName,
-            rarity: rarity,
-            holoPattern: holoPattern,
-            description: description,
-            image: previewImage,
-            isCustom: true
-        };
-
-        onCreateCard(newCard);
-
-        // Reset form
-        setCardName('New Card');
-        setRarity(1);
-        setHoloPattern('none');
-        setPreviewImage(null);
-        setImage(null);
-    };
 
     // Derived Inventory List (Flattened)
     const allCards = useMemo(() => {
@@ -267,13 +226,7 @@ export default function CardBuilder({ onCreateCard, masterSets, onUpdateMasterSe
     return (
         <div className="card-builder-container">
             {/* Toggle Header */}
-            <div className="builder-nav glass-panel" style={{ marginBottom: '20px', padding: '10px', display: 'flex', gap: '10px' }}>
-                <button
-                    className={`btn ${viewMode === 'builder' ? 'btn-primary' : 'btn-secondary'}`}
-                    onClick={() => setViewMode('builder')}
-                >
-                    <Sparkles size={16} style={{ marginRight: '8px' }} /> Card Creator
-                </button>
+            <div className="builder-nav glass-panel" style={{ marginBottom: '20px', padding: '10px', display: 'flex', gap: '10px', justifyContent: 'center' }}>
                 <button
                     className={`btn ${viewMode === 'premade' ? 'btn-primary' : 'btn-secondary'}`}
                     onClick={() => setViewMode('premade')}
@@ -285,6 +238,20 @@ export default function CardBuilder({ onCreateCard, masterSets, onUpdateMasterSe
                     onClick={() => setViewMode('inventory')}
                 >
                     <LayoutGrid size={16} style={{ marginRight: '8px' }} /> Card Database ({allCards.length})
+                </button>
+                <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)', margin: '0 10px' }}></div>
+                <button className="btn btn-secondary" onClick={() => document.getElementById('builder-import').click()}>
+                    <Upload size={16} /> Import Pack
+                </button>
+                <input
+                    id="builder-import"
+                    type="file"
+                    accept=".js,.json"
+                    style={{ display: 'none' }}
+                    onChange={handleImportSource}
+                />
+                <button className="btn btn-secondary" onClick={handleExportSource}>
+                    <Download size={16} /> Download Source
                 </button>
             </div>
 
@@ -339,116 +306,7 @@ export default function CardBuilder({ onCreateCard, masterSets, onUpdateMasterSe
                 </div>
             )}
 
-            {viewMode === 'builder' && (
-                <div className="builder-layout">
-                    <div className="builder-controls glass-panel">
-                        <h2>Create New Card</h2>
 
-                        <div className="control-group">
-                            <label>Card Name</label>
-                            <input
-                                type="text"
-                                value={cardName}
-                                onChange={(e) => setCardName(e.target.value)}
-                                placeholder="Enter card name..."
-                            />
-                        </div>
-
-                        <div className="control-group">
-                            <label>Rarity (Stars)</label>
-                            <div className="star-selector">
-                                {[1, 2, 3, 4, 5].map((star) => (
-                                    <button
-                                        key={star}
-                                        className={`star-btn ${rarity >= star ? 'active' : ''}`}
-                                        onClick={() => setRarity(star)}
-                                    >
-                                        ★
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="control-group">
-                            <label>Holo Pattern</label>
-                            <select
-                                value={holoPattern}
-                                onChange={(e) => setHoloPattern(e.target.value)}
-                                className="holo-select"
-                            >
-                                <option value="none">None (Standard)</option>
-                                <option value="linear">Linear Sheen</option>
-                                <option value="rainbow">Rainbow (Secret Rare)</option>
-                                <option value="sparkle">Cosmos / Sparkle</option>
-                            </select>
-                        </div>
-
-                        <div className="control-group">
-                            <label>Description</label>
-                            <textarea
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                                placeholder="What does this card do?"
-                            />
-                        </div>
-
-                        <div className="control-group">
-                            <label>Image</label>
-                            {!previewImage ? (
-                                <div
-                                    className="upload-zone"
-                                    onClick={() => document.getElementById('file-upload').click()}
-                                    onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
-                                    onDrop={handleDrop}
-                                >
-                                    <Upload size={32} />
-                                    <span>Drag & Drop OR Click (Multiselect Supported)</span>
-                                    <input
-                                        id="file-upload"
-                                        type="file"
-                                        hidden
-                                        multiple
-                                        accept="image/*"
-                                        onChange={handleFileInput}
-                                    />
-                                </div>
-                            ) : (
-                                <div className="image-preview-strip">
-                                    <img src={previewImage} alt="preview" />
-                                    <button className="change-img-btn" onClick={() => setImage(null) || setPreviewImage(null)}>
-                                        <X size={16} /> Remove
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-
-                        <button
-                            className="btn btn-primary btn-full"
-                            disabled={!previewImage || !cardName}
-                            onClick={handleSave}
-                        >
-                            Create Card
-                        </button>
-                    </div>
-
-                    <div className="builder-preview">
-                        <h3>Live Preview</h3>
-                        <div className="preview-container">
-                            <Card
-                                card={{
-                                    name: cardName,
-                                    rarity: rarity,
-                                    holoPattern: holoPattern,
-                                    description: description,
-                                    image: previewImage || 'https://via.placeholder.com/400x600?text=Upload+Image'
-                                }}
-                                isRevealed={true}
-                                onClick={onCardClick}
-                            />
-                        </div>
-                    </div>
-                </div>
-            )}
 
             {viewMode === 'inventory' && (
                 <div className="inventory-database glass-panel" style={{ padding: '20px' }}>
@@ -501,38 +359,7 @@ export default function CardBuilder({ onCreateCard, masterSets, onUpdateMasterSe
                 </div>
             )}
 
-            {showCropper && (
-                <div className="cropper-modal">
-                    <div className="cropper-content glass-panel">
-                        <h3>Crop Card Image</h3>
-                        <div className="cropper-wrapper">
-                            <Cropper
-                                image={image}
-                                crop={crop}
-                                zoom={zoom}
-                                aspect={ASPECT_RATIO}
-                                onCropChange={setCrop}
-                                onCropComplete={onCropComplete}
-                                onZoomChange={setZoom}
-                            />
-                        </div>
-                        <div className="cropper-controls">
-                            <input
-                                type="range"
-                                value={zoom}
-                                min={1}
-                                max={3}
-                                step={0.1}
-                                onChange={(e) => setZoom(e.target.value)}
-                            />
-                            <div className="cropper-btns">
-                                <button className="btn btn-secondary" onClick={() => setShowCropper(false)}>Cancel</button>
-                                <button className="btn btn-primary" onClick={createCroppedImage}>Apply Crop</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+
 
             {/* EDIT CARD MODAL */}
             {editingCard && (
