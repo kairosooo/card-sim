@@ -1,0 +1,478 @@
+.alchemy-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    animation: fadeIn 0.5s ease-out;
+    padding-bottom: 50px;
+}
+
+.alchemy-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 40px;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-title h2 {
+    font-size: 2rem;
+    background: linear-gradient(to right, #fff, #9b59b6);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.icon-burn {
+    color: #9b59b6;
+    animation: pulse-glow 2s infinite;
+}
+
+.recipe-selector {
+    display: flex;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 4px;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.recipe-pill {
+    padding: 8px 20px;
+    border-radius: 50px;
+    border: 1px solid transparent;
+    background: none;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.recipe-pill:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.recipe-pill.active {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 0 15px var(--accent);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.alchemy-main {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 40px;
+    min-height: 700px;
+}
+
+/* Ingredient Vault */
+.ingredient-vault {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.vault-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.count-hint {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.ingredient-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 15px;
+    padding: 20px;
+    overflow-y: auto;
+    max-height: 600px;
+}
+
+.ingredient-item {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ingredient-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.ingredient-item.exhausted {
+    opacity: 0.4;
+    filter: grayscale(0.8);
+    cursor: not-allowed;
+}
+
+.ingredient-preview {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2.5/3.5;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.ingredient-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.remaining-badge {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: #000;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.ingredient-name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    text-align: center;
+}
+
+.empty-vault {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    height: 300px;
+    color: rgba(255, 255, 255, 0.2);
+}
+
+/* Altar */
+.alchemy-altar {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.altar-platform {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at center, rgba(155, 89, 182, 0.1) 0%, transparent 70%);
+    position: relative;
+}
+
+.magic-circle {
+    width: 500px;
+    height: 500px;
+    border: 2px dashed rgba(155, 89, 182, 0.2);
+    border-radius: 50%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.magic-circle.spinning {
+    animation: rotate 10s linear infinite;
+}
+
+.selected-slots {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.slot {
+    position: absolute;
+    width: 80px;
+    height: 110px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(155, 89, 182, 0.3);
+    border-radius: 8px;
+    top: 50%;
+    left: 50%;
+    transform-origin: center;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.slot:hover {
+    border-color: #9b59b6;
+    box-shadow: 0 0 15px rgba(155, 89, 182, 0.4);
+}
+
+.slot.filled {
+    border-color: #9b59b6;
+}
+
+.slot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.slot-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgba(155, 89, 182, 0.5);
+    font-weight: 800;
+}
+
+/* Circular positioning for slots */
+.slot:nth-child(1) {
+    transform: translate(-50%, -50%) rotate(0deg) translateY(-180px);
+}
+
+.slot:nth-child(2) {
+    transform: translate(-50%, -50%) rotate(60deg) translateY(-180px) rotate(-60deg);
+}
+
+.slot:nth-child(3) {
+    transform: translate(-50%, -50%) rotate(120deg) translateY(-180px) rotate(-120deg);
+}
+
+.slot:nth-child(4) {
+    transform: translate(-50%, -50%) rotate(180deg) translateY(-180px) rotate(-180deg);
+}
+
+.slot:nth-child(5) {
+    transform: translate(-50%, -50%) rotate(240deg) translateY(-180px) rotate(-240deg);
+}
+
+.slot:nth-child(6) {
+    transform: translate(-50%, -50%) rotate(300deg) translateY(-180px) rotate(-300deg);
+}
+
+.transmute-orb {
+    width: 180px;
+    height: 180px;
+    z-index: 10;
+}
+
+.transmute-btn {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(155, 89, 182, 0.1);
+    border: 2px solid rgba(155, 89, 182, 0.3);
+    color: #9b59b6;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    cursor: not-allowed;
+    opacity: 0.5;
+    transition: all 0.4s;
+}
+
+.transmute-btn.ready {
+    background: rgba(155, 89, 182, 0.2);
+    border-color: #9b59b6;
+    color: #fff;
+    opacity: 1;
+    cursor: pointer;
+    box-shadow: 0 0 30px rgba(155, 89, 182, 0.3);
+}
+
+.transmute-btn.ready:hover {
+    transform: scale(1.05);
+    background: #9b59b6;
+    box-shadow: 0 0 50px rgba(155, 89, 182, 0.6);
+}
+
+.glow-effect {
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 100px #9b59b6, 0 0 200px #9b59b6;
+    animation: flash 0.5s infinite alternate;
+}
+
+.recipe-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    padding: 20px;
+}
+
+.recipe-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.recipe-stat .label {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.recipe-stat .value {
+    font-size: 1.2rem;
+    font-weight: 800;
+}
+
+.recipe-arrow {
+    color: #9b59b6;
+    animation: pulse-glow 2s infinite;
+}
+
+/* Success State */
+.result-card-preview {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    cursor: pointer;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.success-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(46, 204, 113, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-weight: 800;
+    font-size: 0.9rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+    border-radius: 12px;
+}
+
+.result-card-preview:hover .success-overlay {
+    opacity: 1;
+}
+
+/* Celebration Overlay */
+.transmution-celebration {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    z-index: 5000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.celebration-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    max-width: 500px;
+    text-align: center;
+    position: relative;
+}
+
+.result-card-large {
+    width: 300px;
+    height: 420px;
+    box-shadow: 0 0 50px rgba(155, 89, 182, 0.6);
+    border-radius: 20px;
+}
+
+.result-info h2 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    background: linear-gradient(to right, #fff, #9b59b6);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.result-info p {
+    margin-top: 15px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.1rem;
+}
+
+.spark-1,
+.spark-2 {
+    position: absolute;
+    color: #f1c40f;
+    animation: float 3s infinite;
+}
+
+.spark-1 {
+    top: -20px;
+    left: -20px;
+}
+
+.spark-2 {
+    top: 40px;
+    right: -40px;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes flash {
+    from {
+        opacity: 0.5;
+        filter: brightness(1);
+    }
+
+    to {
+        opacity: 1;
+        filter: brightness(2);
+    }
+}
+
+@media (max-width: 1000px) {
+    .alchemy-main {
+        grid-template-columns: 1fr;
+    }
+}

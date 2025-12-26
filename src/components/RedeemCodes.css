@@ -1,0 +1,175 @@
+.redeem-container {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 40px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    animation: slideUp 0.4s ease-out;
+}
+
+.redeem-header h2 {
+    font-size: 2rem;
+    margin: 10px 0;
+    background: linear-gradient(135deg, #fff 0%, #aaa 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.redeem-header p {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.redeem-icon {
+    color: #f1c40f;
+    margin-bottom: 10px;
+}
+
+.balance-display {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.balance-display .label {
+    font-size: 0.8rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.balance-display .value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #f1c40f;
+}
+
+.redeem-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.redeem-input {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 15px;
+    color: white;
+    font-size: 1rem;
+    text-align: center;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+}
+
+.redeem-input:focus {
+    outline: none;
+    border-color: #f1c40f;
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 15px rgba(241, 196, 15, 0.1);
+}
+
+.redeem-btn {
+    padding: 15px !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    background: linear-gradient(135deg, #f1c40f 0%, #d4ac0d 100%) !important;
+    border: none !important;
+    color: #000 !important;
+}
+
+.status-bubble {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.status-bubble.success {
+    background: rgba(46, 204, 113, 0.1);
+    color: #2ecc71;
+    border: 1px solid rgba(46, 204, 113, 0.2);
+}
+
+.status-bubble.error {
+    background: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+    border: 1px solid rgba(231, 76, 60, 0.2);
+}
+
+.code-tips {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.code-tips h4 {
+    font-size: 0.8rem;
+    color: #555;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+.tier-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.tier-item {
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.tier-item strong {
+    color: #fff;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.tier-item.brnz strong {
+    color: #cd7f32;
+}
+
+.tier-item.slvr strong {
+    color: #c0c0c0;
+}
+
+.tier-item.gold strong {
+    color: #ffd700;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

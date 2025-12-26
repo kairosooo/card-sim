@@ -1,0 +1,415 @@
+.card-container {
+    width: 260px;
+    height: 360px;
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+}
+
+/* Card Thickness (Side Edge) */
+.card-inner::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    width: 4px;
+    /* Thickness of the card */
+    height: 100%;
+    background: #ccc;
+    /* White/Grey paper core */
+    transform: rotateY(90deg) translateZ(2px);
+    /* Position it on the edge */
+    top: 0;
+    backface-visibility: hidden;
+    /* Optional: gradient to simulate lighting on the edge */
+    background: linear-gradient(to right, #888, #fff, #888);
+}
+
+.card-container.flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.card-front {
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    background: #1a1f26;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-back {
+    /* Shared absolute positioning is defined above, but we override here for clarity */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    /* VISUAL CONFIG */
+    background: #0a0a12 url('/images/new-card-back.jpg') center/100% 100% no-repeat;
+
+    /* ROTATION: 0deg means it faces the user when the container is at 0deg */
+    transform: rotateY(0deg);
+    backface-visibility: hidden;
+
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+
+    /* Flex adjustment if we ever put content back in */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ensure the glow sits on top */
+.card-back-glow {
+    position: absolute;
+    width: 200%;
+    height: 100px;
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transform: rotate(-45deg);
+    animation: sweep 3s infinite linear;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+}
+
+@keyframes sweep {
+    0% {
+        transform: translate(-100%, -100%) rotate(-45deg);
+    }
+
+    100% {
+        transform: translate(100%, 100%) rotate(-45deg);
+    }
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 0 4px;
+}
+
+.card-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.card-type {
+    font-size: 0.8rem;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.card-image-container {
+    flex: 1;
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.card-container:hover .card-image {
+    transform: scale(1.05);
+}
+
+.card-container.full-art .card-front {
+    padding: 0;
+    border-radius: 18px;
+    border: none;
+}
+
+.card-container.full-art .card-image-container {
+    border-radius: 17px;
+}
+
+.card-container.full-art .card-content {
+    height: 100%;
+}
+
+.card-footer {
+    padding: 12px 4px 4px;
+}
+
+.card-desc {
+    font-size: 0.85rem;
+    color: #8b949e;
+    line-height: 1.4;
+    margin-bottom: 10px;
+    min-height: 2.8rem;
+}
+
+.card-rarity-stars {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    margin-top: 5px;
+}
+
+.star {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.1);
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+}
+
+.star.active {
+    color: #f1c40f;
+    text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
+}
+
+/* Rarity Effects */
+.rarity-1 {
+    background: #4a5568;
+}
+
+.rarity-2 {
+    background: #2f855a;
+}
+
+.rarity-3 {
+    background: #2b6cb0;
+}
+
+.rarity-4 {
+    background: #6b46c1;
+    box-shadow: 0 0 15px #6b46c1;
+}
+
+.rarity-5 {
+    background: #b7791f;
+    box-shadow: 0 0 20px #b7791f;
+}
+
+.card-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    opacity: 0.15;
+    transition: opacity 0.3s ease;
+}
+
+.card-container:hover .card-glow {
+    opacity: 0.3;
+}
+
+.rarity-4 .card-glow {
+    background: linear-gradient(45deg, transparent, rgba(107, 70, 193, 0.4), transparent);
+    animation: hologram 3s infinite linear;
+}
+
+.rarity-5 .card-glow {
+    background: linear-gradient(45deg, transparent, rgba(246, 173, 85, 0.5), transparent);
+    animation: hologram 2s infinite linear;
+}
+
+@keyframes hologram {
+    0% {
+        transform: translateX(-100%) rotate(45deg);
+    }
+
+    100% {
+        transform: translateX(200%) rotate(45deg);
+    }
+}
+
+/* Holographic Overlay */
+/* EXTENDED HOLOGRAPHIC OVERLAY SYSTEM */
+.holo-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    mix-blend-mode: overlay;
+    /* Default */
+    opacity: 0;
+    /* Default invisible until hover/active or handled by specific style */
+    pointer-events: none;
+    border-radius: 17px;
+    transition: opacity 0.3s ease;
+}
+
+/* Force opacity logic: If card has specific holo pattern */
+.card-container:hover .holo-overlay,
+.holo-overlay.holo-linear,
+.holo-overlay.holo-rainbow,
+.holo-overlay.holo-sparkle {
+    opacity: 1;
+    /* Always show if a specific pattern is applied - controlled by opacity within class if needed */
+}
+
+/** PATTERN: LINEAR (Vertical Sheen) **/
+.holo-overlay.holo-linear {
+    background: linear-gradient(105deg,
+            transparent 20%,
+            rgba(255, 255, 255, 0.4) 30%,
+            transparent 50%,
+            rgba(255, 255, 255, 0.4) 60%,
+            transparent 70%);
+    background-size: 200% 200%;
+    background-position: var(--mx, 50%) var(--my, 50%);
+    mix-blend-mode: hard-light;
+    opacity: 0.8;
+    filter: brightness(1.2);
+}
+
+/** PATTERN: RAINBOW (Secret Rare / Conic) **/
+.holo-overlay.holo-rainbow {
+    background:
+        linear-gradient(115deg, transparent, rgba(255, 255, 255, 0.2), transparent),
+        conic-gradient(from var(--mx, 0deg) at 50% 50%,
+            #ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0080, #ff0000);
+    background-size: 100% 100%, 150% 150%;
+    background-position: center, center;
+    mix-blend-mode: color-dodge;
+    opacity: 0.6;
+}
+
+/** PATTERN: SPARKLE (Cosmos Simulation) **/
+.holo-overlay.holo-sparkle {
+    background-image:
+        radial-gradient(circle 2px at 10% 10%, white, transparent 2px),
+        radial-gradient(circle 2px at 30% 70%, white, transparent 2px),
+        radial-gradient(circle 3px at 70% 20%, white, transparent 3px),
+        /* Dynamic Glare */
+        linear-gradient(125deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.7) 50%, rgba(255, 255, 255, 0) 70%);
+    background-size: 100% 100%;
+    background-position: var(--mx, 50%) var(--my, 50%);
+    mix-blend-mode: overlay;
+    opacity: 0.8;
+}
+
+/** LEGACY: FALLBACK RARITY MAPPING **/
+/* If no specific pattern is set but rarity is 5, default to rainbow style */
+.rarity-5 .holo-overlay:not(.holo-linear):not(.holo-rainbow):not(.holo-sparkle) {
+    background: conic-gradient(from var(--mx, 0deg) at 50% 50%,
+            #ff0000, #ff8000, #ffff00, #80ff00, #00ff00, #00ff80, #00ffff, #0080ff, #0000ff, #8000ff, #ff00ff, #ff0080, #ff0000);
+    opacity: 0.4;
+    mix-blend-mode: hard-light;
+}
+
+/* Float and Dust Animations */
+.card-container.unflipped {
+    animation: gentleFloat 3s ease-in-out infinite;
+}
+
+@keyframes gentleFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+.particles-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--particle-color, #fff);
+    opacity: 0;
+}
+
+.card-container.revealing .card-inner {
+    animation: revealLift 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes revealLift {
+    0% {
+        transform: scale(1) translateY(0) rotateY(0);
+    }
+
+    40% {
+        transform: scale(1.1) translateY(-30px) rotateY(0);
+    }
+
+    /* Float up */
+    100% {
+        transform: scale(1) translateY(0) rotateY(180deg);
+    }
+
+    /* Land and Flip */
+}
+
+/* Particle Explosion */
+.card-container.revealing .particle {
+    animation: dustSpill 0.8s ease-out forwards;
+}
+
+@keyframes dustSpill {
+    0% {
+        transform: translate(0, 0) scale(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(var(--tx), var(--ty)) scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* Rarity-specific particle colors overrides via JS or CSS variables */
+.rarity-1 {
+    --particle-color: #a0aec0;
+}
+
+.rarity-2 {
+    --particle-color: #48bb78;
+}
+
+.rarity-3 {
+    --particle-color: #4299e1;
+}
+
+.rarity-4 {
+    --particle-color: #9f7aea;
+}
+
+.rarity-5 {
+    --particle-color: #ed8936;
+}

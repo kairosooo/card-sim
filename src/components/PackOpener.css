@@ -1,0 +1,449 @@
+.pack-opener-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* Premium Tech Background */
+    background-color: #05070a;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        radial-gradient(circle at 50% 50%, rgba(26, 31, 44, 0.4) 0%, rgba(5, 7, 10, 0.8) 100%);
+    background-size: 50px 50px, 50px 50px, 100% 100%;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* Vignette */
+    box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.8);
+}
+
+.pack-opener-content {
+    width: 100%;
+    max-width: 1400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+.pack-info {
+    text-align: center;
+}
+
+.pack-info h2 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(to right, #fff, #8b949e);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Animation Container */
+.pack-opening-container {
+    perspective: 1000px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
+    width: 100%;
+}
+
+.booster-pack {
+    width: 200px;
+    height: 300px;
+    background: linear-gradient(135deg, var(--set-color), #000);
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    box-shadow: 0 0 30px var(--set-color);
+    cursor: pointer;
+    position: relative;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    transform-style: preserve-3d;
+}
+
+.booster-pack::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    bottom: -10px;
+    left: 10px;
+    right: 10px;
+    background: inherit;
+    filter: blur(20px);
+    z-index: -1;
+    opacity: 0.7;
+}
+
+.booster-pack .set-symbol {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+}
+
+/* PACK TEAR STYLES */
+.pack-interaction-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
+    cursor: grab;
+    /* Indicate draggable */
+}
+
+.pack-interaction-container:active {
+    cursor: grabbing;
+}
+
+.booster-pack-model {
+    position: relative;
+    width: 280px;
+    /* Larger pack */
+    height: 440px;
+    perspective: 1000px;
+    transition: transform 0.3s ease;
+}
+
+.booster-pack-model.pack-entry {
+    animation: packEnter 1s ease-out forwards;
+}
+
+@keyframes packEnter {
+    0% {
+        transform: translateY(100vh) rotate(-10deg) scale(0.5);
+        opacity: 0;
+    }
+
+    60% {
+        transform: translateY(-20px) rotate(2deg) scale(1.1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(0) rotate(0) scale(1);
+    }
+}
+
+.booster-pack-model:hover {
+    transform: scale(1.02);
+}
+
+.pack-body {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 85%;
+    /* New Pack Art (calculated to align with top strip) */
+    background: url('/images/new-pack-art.jpg') no-repeat;
+    background-size: 280px 440px;
+    background-position: 0 -66px;
+
+    border-radius: 0 0 12px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    z-index: 2;
+}
+
+.pack-top-strip {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 15%;
+    /* New Pack Art (Top Section) */
+    background: url('/images/new-pack-art.jpg') no-repeat;
+    background-size: 280px 440px;
+    background-position: 0 0;
+
+    border-radius: 12px 12px 0 0;
+    border-bottom: 2px dashed rgba(255, 255, 255, 0.3);
+    z-index: 3;
+    transform-origin: bottom left;
+}
+
+.pack-top-strip.flying-off {
+    animation: ripOff 0.8s forwards ease-in;
+}
+
+@keyframes ripOff {
+    0% {
+        transform: rotate(0deg) translate(0, 0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: rotate(-45deg) translate(-200px, -200px);
+        opacity: 0;
+    }
+}
+
+.crimp-texture {
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(90deg,
+            rgba(0, 0, 0, 0.1),
+            rgba(0, 0, 0, 0.1) 2px,
+            transparent 2px,
+            transparent 4px);
+}
+
+.swipe-hint {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    animation: slideRightHint 1.5s infinite;
+}
+
+@keyframes slideRightHint {
+    0% {
+        transform: translateX(-10px);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: translateX(10px);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(-10px);
+        opacity: 0.5;
+    }
+}
+
+/* STACKED DEALING STYLES */
+.dealing-scene {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    /* For absolute button positioning */
+}
+
+.reveal-all-btn {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    backdrop-filter: blur(5px);
+    transition: all 0.2s ease;
+    z-index: 50;
+}
+
+.reveal-all-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+.active-card-stack {
+    position: relative;
+    width: 260px;
+    height: 360px;
+    /* Center the stack horizontally */
+    margin: 0 auto;
+    will-change: transform;
+}
+
+.active-card-stack.large-stack {
+    position: relative;
+    width: 320px;
+    /* Bigger cards for reveal */
+    height: 440px;
+}
+
+.review-scene {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.review-scene h2 {
+    color: white;
+    margin-bottom: 20px;
+    font-size: 2rem;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.fade-in-grid .card-wrapper {
+    animation: fadeInUp 0.5s backwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.stack-card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Transition is handled by JS for active card, CSS for others */
+    transition: transform 0.5s ease;
+    will-change: transform;
+}
+
+.stack-card .card-container {
+    width: 100%;
+    height: 100%;
+}
+
+.stack-card.top-card {
+    cursor: grab;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    /* Cheaper than filter: drop-shadow */
+}
+
+
+.sliding-away {
+    animation: slideOutRight 0.6s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+    pointer-events: none;
+}
+
+@keyframes slideOutRight {
+    0% {
+        transform: translateX(0) rotate(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(400px) rotate(20deg);
+        opacity: 0;
+    }
+}
+
+/* Card Dealing Animation */
+.card-wrapper {
+    animation: dealCard 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) backwards;
+}
+
+@keyframes dealCard {
+    0% {
+        transform: translateY(100vh) scale(0.5) rotate(10deg);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0) scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+/* Final Summary Grid */
+.pack-horizontal-scroll {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 1400px;
+    padding: 20px;
+    gap: 20px;
+    margin: 0 auto;
+    overflow-y: visible;
+}
+
+.pack-horizontal-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.pack-horizontal-scroll .card-wrapper {
+    flex: 0 1 220px;
+    height: 310px;
+    position: relative;
+    transform-origin: center center;
+    transition: transform 0.3s ease;
+}
+
+.pack-horizontal-scroll .card-wrapper .card-container {
+    width: 100%;
+    height: 100%;
+}
+
+.pack-horizontal-scroll .card-wrapper:hover {
+    transform: scale(1.05);
+    z-index: 5;
+}
+
+.card-count-badge {
+    position: absolute;
+    bottom: -15px;
+    right: -10px;
+    background: #e74c3c;
+    color: white;
+    font-weight: 800;
+    font-size: 1.2rem;
+    padding: 5px 15px;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    border: 2px solid white;
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards;
+    animation-delay: 0.5s;
+}
+
+@keyframes popIn {
+    from {
+        transform: scale(0);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}
+
+@media (min-width: 1200px) {
+    .pack-horizontal-scroll {
+        gap: 30px;
+    }
+}
+
+.pack-actions {
+    display: flex;
+    gap: 20px;
+    margin-top: 40px;
+    padding-bottom: 40px;
+    width: 100%;
+    justify-content: center;
+}
